@@ -18,7 +18,7 @@ const Header:FC<IProps> = (props) => {
     const location=useLocation()
     console.log(location)
     const cart=useSelector(state=>state?.cart)
-    const headerRoute=[{page:'Hhhiohuiome',route:'/'},{page:'Shop',route:'/shop'},{page:'Blog',route:'/blog'},{page:'Contact',route:'/contact'},{page:'About',route:'/about'}]
+    const headerRoute=[{page:'Home',route:'/'},{page:'Shop',route:'/shop'},{page:'Blog',route:'/blog'},{page:'Contact',route:'/contact'},{page:'About',route:'/about'}]
     return <>
     <div className="flex justify-between">
         <img src={logo}/>
