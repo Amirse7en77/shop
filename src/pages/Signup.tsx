@@ -28,28 +28,30 @@ const Signup: FC<IProps> = (props) => {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting }, // Removed touchedFields here
   } = useForm({
     resolver: zodResolver(formSchema),
+    mode:"onTouched"
   });
   const onSubmit = (data) => {
     console.log(data);
     reset()
-    
+
   };
   return (
     <>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex justify-center items-center h-[500px]"
+        className="flex justify-center items-center h-[600px]"
       >
-        <div className="p-4 border-2 rounded-2xl w-[400px] h-[400px]">
+        <div className="p-4 border-2 rounded-2xl w-[400px] h-[500px]">
           <h1>Sign Up</h1>
           <div className="text-left  mt-4">
             <p>
               <label>Name</label>
               <Input {...register("name")} placeholder="Name" />
             </p>
+            {/* Changed condition to only check for errors.name */}
             {errors.name && (
               <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
             )}
@@ -58,6 +60,7 @@ const Signup: FC<IProps> = (props) => {
           <div className="text-left mt-4">
             <label>Email</label>
             <Input {...register("email")} placeholder="Email" />
+             {/* Changed condition to only check for errors.email */}
             {errors.email && (
               <p className="text-red-500 text-sm mt-1">
                 {errors.email.message}
@@ -67,6 +70,7 @@ const Signup: FC<IProps> = (props) => {
           <div className="text-left mt-4">
             <label>Password</label>
             <Input {...register("password")} type="password" placeholder="Password" />
+             {/* Changed condition to only check for errors.password */}
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">
                 {errors.password.message}
