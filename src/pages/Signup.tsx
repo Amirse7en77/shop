@@ -9,20 +9,17 @@ import { Link } from "react-router-dom";
 interface IProps {}
 
 const Signup: FC<IProps> = (props) => {
+  
   const formSchema = z.object({
-    name: z
+    username: z
       .string()
-      .min(2, "Name must be at least 2 characters")
+      .min(6, "Name must be at least 6 characters")
       .max(50, "Name must be less than 50 characters"),
     email: z.string().email("Invalid email address"),
     password: z
       .string()
       .min(8, "Password must be at least 8 characters")
-      .regex(/[0-9]/, "Password must contain at least one number")
-      .regex(
-        /[^A-Za-z0-9]/,
-        "Password must contain at least one special character"
-      ),
+     
   });
   const {
     register,
@@ -33,8 +30,9 @@ const Signup: FC<IProps> = (props) => {
     resolver: zodResolver(formSchema),
     mode:"onTouched"
   });
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = () => {
+    
+  
     reset()
 
   };
@@ -49,11 +47,11 @@ const Signup: FC<IProps> = (props) => {
           <div className="text-left  mt-4">
             <p>
               <label>Name</label>
-              <Input {...register("name")} placeholder="Name" />
+              <Input {...register("username")} placeholder="Name" />
             </p>
             {/* Changed condition to only check for errors.name */}
-            {errors.name && (
-              <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+            {errors.username && (
+              <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>
             )}
           </div>
 

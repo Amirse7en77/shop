@@ -1,29 +1,93 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { signinApi } from "@/services/authServices";
+import { getUser } from "@/slice/userSlice";
+import { zodResolver } from "@hookform/resolvers/zod";
 import React, { FC, useState } from "react";
-import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { z } from "zod";
 
 interface IProps {};
 
 const Signin: FC<IProps> = (props) => {
+    const dispatch=useDispatch()
+    const navigate=useNavigate()
+    
+      const formSchema = z.object({
+        username: z
+          .string()
+          .min(6, "Name must be at least 6 characters")
+          .max(50, "Name must be less than 50 characters"),
+        
+        password: z
+          .string()
+          .min(8, "Password must be at least 8 characters")
+         
+      });
+     const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors, isSubmitting }, // Removed touchedFields here
+      } = useForm({
+        resolver: zodResolver(formSchema),
+        mode:"onTouched"
+      });
+    const handleLogin=async ({username,password})=>{
+        try {
+            const response = await fetch('https://dummyjson.com/user/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                username: username,
+                password: password,
+                expiresInMins: 30,
+              }),
+            });
+        
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+        
+            const data = await response.json();
+            dispatch(getUser(data))
+            navigate('/')
+            console.log(data);
+
+          
+          } catch (error) {
+            console.error('Error:', error);
+          }
+          
+        }
+        
+
+
+    
     const [isVisible, setIsVisible] = useState(false);
 
     const toggleVisibility = () => setIsVisible(!isVisible);
 
     return (
-        <div className="flex justify-center items-center h-[500px]">
+        <form onSubmit={handleSubmit(handleLogin)} className="flex justify-center items-center h-[500px]">
             <div className="p-4 border-2 rounded-2xl w-[400px] h-[300px]">
                 <h1 className="text-xl font-bold mb-6">Sign In</h1>
                 
                 <div className="text-left mt-4">
                     <label className="block mb-2 text-sm font-medium">Email</label>
-                    <Input placeholder="Email" />
+                    <Input {...register('username')} placeholder="UserName" />
+                    {errors.username && (
+              <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>
+            )}
                 </div>
                 
                 <div className="text-left mt-4 relative">
                     <label className="block mb-2 text-sm font-medium">Password</label>
                     <div className="relative">
                         <Input 
+                        {...register('password')}
                             placeholder="Password" 
                             type={isVisible ? 'text' : 'password'}
                             className="pr-10" // Add right padding for the button
@@ -73,11 +137,14 @@ const Signin: FC<IProps> = (props) => {
                                 </svg>
                             )}
                         </Button>
+                        {errors.password && (
+              <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+            )}
                     </div>
                 </div>
 
                 <div className="flex justify-between mt-10 items-center">
-                    <Button className="px-8">Log In</Button>
+                    <Button type="submit" className="px-8">Log In</Button>
                     <Link 
                         to="/signup" 
                         className="text-sm text-primary hover:underline"
@@ -86,7 +153,7 @@ const Signin: FC<IProps> = (props) => {
                     </Link>
                 </div>
             </div>
-        </div>
+        </form>
     );
 };
 

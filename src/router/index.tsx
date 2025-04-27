@@ -9,6 +9,7 @@ import Product from "@/components/Product";
 import Cart from "@/components/Cart";
 import Signin from "@/pages/Signin";
 import Signup from "@/pages/Signup";
+import Profile from "@/components/Profile";
 
 export const router = createBrowserRouter([
   {
@@ -47,6 +48,9 @@ export const router = createBrowserRouter([
       },{
         path:'/signup',
         element:<Signup/>
+      },{
+        path:'/profile',
+        element:<Profile/>
       }
     ],
   },
