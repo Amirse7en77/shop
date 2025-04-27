@@ -2,7 +2,8 @@ import axios from "axios";
 
 const app= axios.create({
     baseURL:'https://dummyjson.com',
-    withCredentials:true
+    withCredentials:true,
+   
     
 })
 

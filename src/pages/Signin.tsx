@@ -37,15 +37,7 @@ const Signin: FC<IProps> = (props) => {
   });
   const handleLogin = async ({ username, password }) => {
     try {
-      const response = await fetch("https://dummyjson.com/user/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: username,
-          password: password,
-          expiresInMins: 30,
-        }),
-      });
+      const response = await signinApi()
 
       if (!response.ok) {
         toast("username or password is incorrect");
