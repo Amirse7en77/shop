@@ -7,6 +7,7 @@ import React, { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { z } from "zod";
 
 interface IProps {};
@@ -18,6 +19,7 @@ const Signin: FC<IProps> = (props) => {
       const formSchema = z.object({
         username: z
           .string()
+          
           .min(6, "Name must be at least 6 characters")
           .max(50, "Name must be less than 50 characters"),
         
@@ -29,7 +31,7 @@ const Signin: FC<IProps> = (props) => {
      const {
         register,
         handleSubmit,
-        reset,
+        
         formState: { errors, isSubmitting }, // Removed touchedFields here
       } = useForm({
         resolver: zodResolver(formSchema),
@@ -48,7 +50,9 @@ const Signin: FC<IProps> = (props) => {
             });
         
             if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
+              
+              toast('username or password is incorrect',)
+              return
             }
         
             const data = await response.json();
