@@ -6,71 +6,22 @@ import { Button } from "./ui/button";
 import { Link, useLocation } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 import { Badge } from "./ui/badge";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Search from "./Search";
+import { getJwtToken, getRefreshToken } from "@/services/jwtServices";
+import { getUser } from "@/slice/userSlice";
 
 interface IProps {}
 
 const Header: FC<IProps> = (props) => {
-  
   const user = useSelector((state) => state?.user);
-  
- 
- 
-
+const dispatch=useDispatch()
   console.log(user);
-  useEffect(() => {
-    if (user?.user?.accessToken) {
   
-      // Safely access accessToken
-      fetch("https://dummyjson.com/auth/me", {
-        // Correct endpoint for getting authenticated user details
-        method: "GET", // GET method is correct for /auth/me
-        headers: {
-          Authorization: `Bearer ${user.user.accessToken}`, // Correctly pass the token
-        },
-      })
-        .then((res) => {
-          if (!res.ok) {
-            // Handle errors, e.g., token expired or invalid
-            console.error(
-              "Failed to authenticate token:",
-              res.status,
-              res.statusText
-            );
-            // You might want to dispatch an action here to log the user out
-            return null; // Prevent further processing
-          }
-          return res.json();
-        })
-        .then((user) => {
-          if (user) {
-            console.log("Authenticated user data:", user);
-
-          }
-        })
-        .catch((error) => {
-          console.error("Error during token verification:", error);
-          // Handle network errors or other issues
-        });
-    } else {
-     
-      fetch("https://dummyjson.com/auth/refresh", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          refreshToken: `${user?.user?.refreshToken}`, // Optional, if not provided, the server will use the cookie
-          expiresInMins: 30, // optional (FOR ACCESS TOKEN), defaults to 60
-        }),
-        credentials: "include", // Include cookies (e.g., accessToken) in the request
-      })
-        .then((res) => res.json())
-        .then(console.log);
-    }
-  }, [user?.user?.accessToken, user?.user?.refreshToken]);
+  
 
   const location = useLocation();
- 
+
   const cart = useSelector((state) => state?.cart);
   const headerRoute = [
     { page: "Home", route: "/" },
