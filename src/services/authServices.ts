@@ -7,13 +7,10 @@ export const userApi= async (accessToken)=>{
   }})
   
 }
-export const signinApi= async (accessToken)=>{
-  return axios.get("https://dummyjson.com/user/login",{
-    body: JSON.stringify({
-      username: username,
-      password: password,
-      expiresInMins: 30,
-    })
-  })
-  
-}
+export const signinApi = async (username, password) => {
+  return axios.get("https://dummyjson.com/user/login", {
+    username: username,
+    password: password,
+    expiresInMins: 30,
+  });
+};

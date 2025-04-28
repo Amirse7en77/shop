@@ -1,23 +1,12 @@
-
-import banner from './assets/Bannar.svg'
-import MainContent from './components/MainContent'
-import Wrapper from './components/Wrapper'
-
-import MainLayout from './layout/MainLayout'
-
-
+import MainContent from "./components/MainContent";
+import Wrapper from "./components/Wrapper";
 
 function App() {
- 
   return (
     <Wrapper>
-      
-      <MainContent/>
-     
-      
-      
+      <MainContent />
     </Wrapper>
-  )
+  );
 }
 
-export default App
+export default App;
