@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Card, CardContent, CardDescription } from './ui/card';
 import { Link } from 'react-router-dom';
@@ -11,12 +10,13 @@ const InfiniteScrollComponent = ({ filteredProduct }) => {
   const [page, setPage] = useState(1);
   const itemsPerPage = 8;
 
-  // Initialize and update when filteredProduct changes
   useEffect(() => {
-    setItems(filteredProduct);
-    setDisplayedItems(filteredProduct.slice(0, itemsPerPage));
+    // Ensure filteredProduct is always an array
+    const safeProducts = Array.isArray(filteredProduct) ? filteredProduct : [];
+    setItems(safeProducts);
+    setDisplayedItems(safeProducts.slice(0, itemsPerPage));
     setPage(1);
-    setHasMore(true);
+    setHasMore(safeProducts.length > itemsPerPage);
   }, [filteredProduct]);
 
   const fetchMoreData = () => {
@@ -47,25 +47,25 @@ const InfiniteScrollComponent = ({ filteredProduct }) => {
       <div className="grid md:grid-cols-4 mt-4 sm:grid-cols-1">
         {displayedItems.map((product) => (
           <Card 
-            key={product.id} // Added proper key
-            className="m-4 bg-green-700 hover:bg-green-800 transition-colors duration-200"
+          key={product.id} // Added proper key
+          className="m-4 bg-green-700 hover:bg-green-800 transition-colors duration-200"
           >
-            <Link to={`/shop/${product.id}`}>
-              <div className="w-full h-48 flex justify-center items-center overflow-hidden cursor-pointer">
-                <img
-                  className="h-full w-auto object-contain transition-transform duration-300 hover:scale-105"
-                  src={product.thumbnail}
-                  alt={product.title}
-                />
-              </div>
-            </Link>
-            <CardDescription className="text-white">
-              {product.title}
-            </CardDescription>
-            <CardContent className="text-white">
-              <p>{product.category}</p>
-              <p>${product.price.toFixed(2)}</p>
-            </CardContent>
+          <Link to={`/shop/${product.id}`}>
+            <div className="w-full h-48 flex justify-center items-center overflow-hidden cursor-pointer">
+              <img
+                className="h-full w-auto object-contain transition-transform duration-300 hover:scale-105"
+                src={product.thumbnail}
+                alt={product.title}
+              />
+            </div>
+          </Link>
+          <CardDescription className="text-white">
+            {product.title}
+          </CardDescription>
+          <CardContent className="text-white">
+            <p>{product.category}</p>
+            <p>${product.price.toFixed(2)}</p>
+          </CardContent>
           </Card>
         ))}
       </div>

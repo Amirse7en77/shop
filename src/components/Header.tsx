@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Search from "./Search";
 import { getJwtToken, getRefreshToken } from "@/services/jwtServices";
 import { getUser } from "@/slice/userSlice";
+import { useProductFilters } from "./customHooks/FilterParams";
 
 interface IProps {}
 
