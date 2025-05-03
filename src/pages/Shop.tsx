@@ -21,6 +21,8 @@ const Shop: FC<IProps> = (props) => {
 
   
 
+  
+
   // ... rest of the code
 
   return (

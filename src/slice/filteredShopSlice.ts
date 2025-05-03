@@ -11,8 +11,10 @@ const filteredShopSlice = createSlice({
       setFilterQuery: (state, action) => {
         state.query = action.payload;
       },
-     
+     setCategoryQuery:(state,action)=>{
+      state.query=action.payload
+     }
     }
   });
-  export const{setFilterQuery}=filteredShopSlice.actions
+  export const{setFilterQuery,setCategoryQuery}=filteredShopSlice.actions
   export default filteredShopSlice.reducer
