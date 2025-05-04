@@ -18,26 +18,33 @@ interface IProps extends object {};
 const Category: FC<IProps> = () => {
     const { category, handleFilter } = useProductFilters();
     const [filteredCategory, setFilteredCategory] = useState(category);
+    
     const dispatch=useDispatch()
     const query=useSelector((state:any)=>state.filteredShop.query)
-    console.log(query)
-    const { data, isSuccess } = useQuery({
+   
+    const { data } = useQuery({
         queryKey: ['category'],
         queryFn: () => axios.get('https://dummyjson.com/products/category-list'),
     });
-   
     const {data:categoryData,isSuccess:isSuccessCategory}=useQuery({
-      queryKey: ['category',category],
-        queryFn: () => axios.get(`https://dummyjson.com/products/category/${filteredCategory}`),
-    })
-    useEffect(()=>{
-      if(isSuccessCategory){
-        console.log(categoryData.data.products)
-        
-            dispatch(setCategoryQuery(categoryData.data.products))
-        
-      }
-    },[categoryData])
+        queryKey: ['category',category],
+          queryFn: () => axios.get(`https://dummyjson.com/products/category/${filteredCategory}`),
+      })
+      const {data:allProduct,isSuccess}=useQuery({
+        queryKey: ['products'],
+          queryFn: () => axios.get(`https://dummyjson.com/products`),
+      })
+      
+useEffect(()=>{ 
+    if(filteredCategory==="allCategories"){{
+        dispatch(setCategoryQuery(allProduct?.data?.products))
+    }
+   }else{
+    dispatch(setCategoryQuery(categoryData?.data?.products))
+   }
+ },[filteredCategory])
+
+    
 
    
    
@@ -52,9 +59,10 @@ const Category: FC<IProps> = () => {
         <div>
             <Select value={filteredCategory} onValueChange={handleValueChange}>
                 <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Category" />
+                    <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="w-[180px] h-[200px] overflow-y-auto">
+                    <SelectItem value="allCategories">All Categories</SelectItem>
                     {data?.data?.map((item: string) => ( // Note: The API returns an array of strings
                         <SelectItem value={item} key={item}>
                             {item}

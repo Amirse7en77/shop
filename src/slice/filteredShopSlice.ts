@@ -4,12 +4,12 @@ import { createSlice } from "@reduxjs/toolkit";
 const filteredShopSlice = createSlice({
     name: 'filteredShop',
     initialState: {
-      query: '',
-      
+      query: [],
+      search: ''
     },
     reducers: {
       setFilterQuery: (state, action) => {
-        state.query = action.payload;
+        state.search = action.payload;
       },
      setCategoryQuery:(state,action)=>{
       state.query=action.payload
