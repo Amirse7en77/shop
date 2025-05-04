@@ -19,7 +19,8 @@ const dispatch=useDispatch()
     // Handle debounced filter updates
     useEffect(() => {
         handleFilter({ search: debouncedSearch });
-        dispatch(setFilterQuery(inputValue))
+        
+        dispatch(setFilterQuery(debouncedSearch))
     }, [debouncedSearch, handleFilter,inputValue]);
 
     return (

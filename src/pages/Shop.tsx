@@ -3,8 +3,7 @@ import { FC } from "react";
 import { useSelector } from "react-redux";
 import InfiniteScrollComponent from "@/components/InfiniteScrollComponent";
 import { motion, AnimatePresence } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+
 import Category from "@/components/Category";
 
 interface IProps {}
