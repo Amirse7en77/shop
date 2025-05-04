@@ -9,8 +9,9 @@ import {
 } from "@/components/ui/select"
 import { useProductFilters } from "./customHooks/FilterParams";
 import { FC, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setCategoryQuery } from "@/slice/filteredShopSlice";
+import { q } from "node_modules/framer-motion/dist/types.d-B50aGbjN";
 
 interface IProps extends object {};
 
@@ -18,10 +19,13 @@ const Category: FC<IProps> = () => {
     const { category, handleFilter } = useProductFilters();
     const [filteredCategory, setFilteredCategory] = useState(category);
     const dispatch=useDispatch()
+    const query=useSelector((state:any)=>state.filteredShop.query)
+    console.log(query)
     const { data, isSuccess } = useQuery({
         queryKey: ['category'],
         queryFn: () => axios.get('https://dummyjson.com/products/category-list'),
     });
+   
     const {data:categoryData,isSuccess:isSuccessCategory}=useQuery({
       queryKey: ['category',category],
         queryFn: () => axios.get(`https://dummyjson.com/products/category/${filteredCategory}`),
@@ -29,7 +33,9 @@ const Category: FC<IProps> = () => {
     useEffect(()=>{
       if(isSuccessCategory){
         console.log(categoryData.data.products)
-        dispatch(setCategoryQuery(categoryData.data.products))
+        
+            dispatch(setCategoryQuery(categoryData.data.products))
+        
       }
     },[categoryData])
 

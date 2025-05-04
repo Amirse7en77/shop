@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { useProductFilters } from "./customHooks/FilterParams";
 import { useDebounce } from "./customHooks/useDebounce";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setFilterQuery } from "@/slice/filteredShopSlice";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";

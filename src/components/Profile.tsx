@@ -13,6 +13,8 @@ const Profile: FC<IProps> = (props) => {
   const user = useSelector((state) => state?.user);
   const handleLoggedOut = () => {
     dispatch(deleteUser(user));
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
     navigate("/signin");
   };
   
