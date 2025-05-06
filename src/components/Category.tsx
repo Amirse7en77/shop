@@ -11,21 +11,23 @@ import { useProductFilters } from "./customHooks/FilterParams";
 import { FC, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCategoryQuery } from "@/slice/filteredShopSlice";
-import { q } from "node_modules/framer-motion/dist/types.d-B50aGbjN";
 
 interface IProps extends object {}
 
 const Category: FC<IProps> = () => {
   const { category, handleFilter } = useProductFilters();
-  const [filteredCategory, setFilteredCategory] = useState("allCategories");
-
+  const [filteredCategory, setFilteredCategory] = useState(category);
+  if (filteredCategory === "") {
+    setFilteredCategory("allCategories");
+  }
   const dispatch = useDispatch();
-  const query = useSelector((state: any) => state.filteredShop.query);
 
+  
   const { data } = useQuery({
     queryKey: ["category"],
     queryFn: () => axios.get("https://dummyjson.com/products/category-list"),
   });
+
   const {
     data: categoryData,
     isSuccess: isSuccessCategory,
@@ -35,20 +37,27 @@ const Category: FC<IProps> = () => {
     queryFn: () =>
       axios.get(`https://dummyjson.com/products/category/${filteredCategory}`),
   });
+  if (isSuccessCategory) {
+    console.log(categoryData);
+  }
   const { data: allProduct, isSuccess } = useQuery({
     queryKey: ["products"],
     queryFn: () => axios.get(`https://dummyjson.com/products`),
   });
 
   useEffect(() => {
-    if (filteredCategory === "allCategories") {
+    if (filteredCategory === "allCategories" || filteredCategory === "") {
       {
-        dispatch(setCategoryQuery(allProduct?.data?.products));
+        if(isSuccess){
+          dispatch(setCategoryQuery(allProduct?.data?.products));
+        }
       }
     } else {
-      dispatch(setCategoryQuery(categoryData?.data?.products));
+      if(isSuccessCategory){
+        dispatch(setCategoryQuery(categoryData?.data?.products));
+      }
     }
-  }, [filteredCategory]);
+  }, [category,data,categoryData]);
 
   if (isLoading) {
     return (
@@ -64,25 +73,27 @@ const Category: FC<IProps> = () => {
   };
 
   return (
-    <div>
-      <Select value={filteredCategory} onValueChange={handleValueChange}>
-        <SelectTrigger className="w-[180px]">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent className="w-[180px] h-[200px] overflow-y-auto">
-          <SelectItem value="allCategories">All Categories</SelectItem>
-          {data?.data?.map(
-            (
-              item: string // Note: The API returns an array of strings
-            ) => (
-              <SelectItem value={item} key={item}>
-                {item}
-              </SelectItem>
-            )
-          )}
-        </SelectContent>
-      </Select>
-    </div>
+    (
+      <div>
+        <Select value={filteredCategory} onValueChange={handleValueChange}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent className="w-[180px] h-[200px] overflow-y-auto">
+            <SelectItem value="allCategories">All Categories</SelectItem>
+            {data?.data?.map(
+              (
+                item: string // Note: The API returns an array of strings
+              ) => (
+                <SelectItem value={item} key={item}>
+                  {item}
+                </SelectItem>
+              )
+            )}
+          </SelectContent>
+        </Select>
+      </div>
+    )
   );
 };
 

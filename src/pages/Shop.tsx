@@ -19,7 +19,7 @@ const Shop: FC<IProps> = (props) => {
   const filteredProducts = products.filter(product =>
     JSON.stringify(product).toLowerCase().includes(inputValue)
   );
-
+  console.log(products)
   return (
     <div>
       <Category />
