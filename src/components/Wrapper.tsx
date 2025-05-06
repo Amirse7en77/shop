@@ -1,66 +1,131 @@
 import { signinApi, userApi } from "@/services/authServices";
-import { getJwtToken, getRefreshToken } from "@/services/jwtServices";
+import { getJwtToken, getRefreshToken, setJwtToken, setRefreshToken, clearTokens } from "@/services/jwtServices"; // Assuming you have set and clear token functions
 import { getUser } from "@/slice/userSlice";
 import React, { FC, useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-interface IProps {}
+interface IProps {
+  children: React.ReactNode; // Define children type
+}
 
 const Wrapper: FC<IProps> = ({ children }) => {
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
-      const accessToken= getJwtToken()
-    console.log(accessToken)
-      if (accessToken) {
-        // Safely access accessToken
-        fetch("https://dummyjson.com/auth/me", {
-          // Correct endpoint for getting authenticated user details
-          method: "GET", // GET method is correct for /auth/me
-          headers: {
-            Authorization: `Bearer ${accessToken}`, // Correctly pass the token
-          },
-        })
-          .then((res) => {
-            if (!res.ok) {
-              // Handle errors, e.g., token expired or invalid
-              console.error(
-                "Failed to authenticate token:",
-                res.status,
-                res.statusText
-              );
-              // You might want to dispatch an action here to log the user out
-              return null; // Prevent further processing
-            }
-            return res.json();
-          })
-          .then((user) => {
-            if (user) {
-              console.log("Authenticated user data:", user);
-              dispatch(getUser(user))
-              console.log(user)
-            }
-          })
-          .catch((error) => {
-            console.error("Error during token verification:", error);
-            // Handle network errors or other issues
-          });
-      } else {
-       const refreshToken= getRefreshToken()
-        console.log(refreshToken)
-        fetch("https://dummyjson.com/auth/refresh", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            refreshToken: `${refreshToken}`, // Optional, if not provided, the server will use the cookie
-            expiresInMins: 30, // optional (FOR ACCESS TOKEN), defaults to 60
-          }),
-          // credentials: "include", // Include cookies (e.g., accessToken) in the request
-        })
-          .then((res) => res.json())
-          .then(console.log);
+    const authenticateUser = async () => {
+      const accessToken = getJwtToken();
+      const refreshToken = getRefreshToken();
+
+      console.log("Initial tokens - accessToken:", accessToken, "refreshToken:", refreshToken);
+
+      // If no tokens exist, user is not logged in, nothing more to do here regarding auth fetch
+      if (!accessToken && !refreshToken) {
+        console.log("No tokens found. User is not authenticated.");
+        // Optionally dispatch an action here to set user state to null or logged out
+        // dispatch(setUserLoggedOut());
+        return;
       }
-    }, []);
+
+      try {
+        // --- Attempt to fetch user with existing access token ---
+        const userResponse = await fetch("https://dummyjson.com/auth/me", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        if (userResponse.ok) {
+          // Access token is valid, dispatch user
+          const user = await userResponse.json();
+          console.log("Authenticated successfully with access token:", user);
+          dispatch(getUser(user));
+          return; // Exit if successful
+        }
+
+        // --- If initial fetch failed, check for 401 and attempt refresh ---
+        if (userResponse.status === 401 && refreshToken) {
+          console.log("Access token expired or invalid. Attempting token refresh...");
+
+          const refreshResponse = await fetch("https://dummyjson.com/auth/refresh", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              refreshToken: refreshToken,
+              expiresInMins: 1440, // optional, matches your original code
+            }),
+          });
+
+          if (refreshResponse.ok) {
+            const newTokens = await refreshResponse.json();
+            console.log("Token refresh successful:", newTokens);
+
+            // **IMPORTANT:** Save the new tokens.
+            // You need to implement setJwtToken and setRefreshToken in your jwtServices
+            // based on how you store tokens (e.g., localStorage, cookies).
+            // Example implementation:
+            // setJwtToken(newTokens.accessToken);
+            // setRefreshToken(newTokens.refreshToken);
+             localStorage.setItem('accessToken', newTokens.accessToken)
+             localStorage.setItem('refreshToken', newTokens.refreshToken)
+
+
+            // --- Attempt to fetch user again with the NEW access token ---
+            const newUserResponse = await fetch("https://dummyjson.com/auth/me", {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${newTokens.accessToken}`,
+              },
+            });
+
+            if (newUserResponse.ok) {
+              const newUser = await newUserResponse.json();
+              console.log("Authenticated successfully after refresh:", newUser);
+              dispatch(getUser(newUser));
+              return; // Exit after successful refresh and fetch
+            } else {
+              // Failed to fetch user even with the new token. This is unexpected.
+              console.error("Failed to fetch user with new token after refresh.", newUserResponse.status);
+              // Treat as completely unauthenticated
+              // clearTokens(); // Clear invalid tokens
+              localStorage.removeItem('accessToken')
+              localStorage.removeItem('refreshToken')
+              // dispatch(setUserLoggedOut()); // Update Redux state
+            }
+
+          } else {
+            // Refresh token failed or is also expired/invalid
+            console.error("Refresh token failed or expired.", refreshResponse.status);
+            // Treat as completely unauthenticated
+            // clearTokens(); // Clear invalid tokens
+              localStorage.removeItem('accessToken')
+              localStorage.removeItem('refreshToken')
+            // dispatch(setUserLoggedOut()); // Update Redux state
+          }
+        } else {
+            // Initial fetch failed with an error other than 401
+            console.error(`Initial user fetch failed with status: ${userResponse.status}`);
+             localStorage.removeItem('accessToken')
+              localStorage.removeItem('refreshToken')
+        }
+
+      } catch (error) {
+        // Catch any network errors or exceptions during the process
+        console.error("An error occurred during the authentication process:", error);
+        // Treat as completely unauthenticated
+         localStorage.removeItem('accessToken')
+              localStorage.removeItem('refreshToken')
+        // clearTokens(); // Clear potentially bad tokens
+        // dispatch(setUserLoggedOut()); // Update Redux state
+      }
+    };
+
+    authenticateUser();
+
+    // The dependency array is empty [], meaning this effect runs only once after the initial render.
+    // Add 'dispatch' as a dependency since it's used inside the effect.
+  }, [dispatch]);
+
   return <>{children}</>;
 };
 
