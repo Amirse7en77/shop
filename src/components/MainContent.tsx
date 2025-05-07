@@ -1,12 +1,10 @@
-import React, { FC } from "react";
-import banner from "./../assets/Bannar.svg";
+import  { FC } from "react";
+
 import {logos} from './mainContent/logos' 
 
 import PopularCategory from "./PopularCategory";
 import Banner from "./mainContent/Banner";
-import { useDispatch } from "react-redux";
-import InfiniteScroll from "./InfiniteScroll";
-import InfiniteScrollComponent from "./InfiniteScrollComponent";
+
 
 interface IProps {}
 

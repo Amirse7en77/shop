@@ -1,7 +1,5 @@
-import {
-  getJwtToken,
-  getRefreshToken
-} from "@/services/jwtServices"; // Assuming you have set and clear token functions
+
+import { getJwtToken, getRefreshToken} from "@/services/jwtServices"; // Assuming you have set and clear token functions
 import { getUser } from "@/slice/userSlice";
 import { FC, PropsWithChildren, useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -32,11 +30,13 @@ const Wrapper: FC<PropsWithChildren> = ({ children }) => {
       try {
         // --- Attempt to fetch user with existing access token ---
         const userResponse = await fetch("https://dummyjson.com/auth/me", {
+          
           method: "GET",
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         });
+        console.log(userResponse)
 
         if (userResponse.ok) {
           // Access token is valid, dispatch user
@@ -78,15 +78,13 @@ const Wrapper: FC<PropsWithChildren> = ({ children }) => {
             localStorage.setItem("refreshToken", newTokens.refreshToken);
 
             // --- Attempt to fetch user again with the NEW access token ---
-            const newUserResponse = await fetch(
-              "https://dummyjson.com/auth/me",
-              {
-                method: "GET",
-                headers: {
-                  Authorization: `Bearer ${newTokens.accessToken}`,
-                },
-              }
-            );
+            const newUserResponse = await fetch("https://dummyjson.com/auth/me", {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${newTokens.accessToken}`,
+              },
+            });
+            console.log(newUserResponse)
 
             if (newUserResponse.ok) {
               const newUser = await newUserResponse.json();
