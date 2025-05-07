@@ -11,6 +11,7 @@ import Search from "./Search";
 import { getJwtToken, getRefreshToken } from "@/services/jwtServices";
 import { getUser } from "@/slice/userSlice";
 import { useProductFilters } from "./customHooks/FilterParams";
+import SplitText from "./ui/SplitText";
 
 interface IProps {}
 
@@ -20,7 +21,9 @@ const dispatch=useDispatch()
   console.log(user);
   
   
-
+  const handleAnimationComplete = () => {
+    console.log('All letters have animated!');
+  };
   const location = useLocation();
 
   const cart = useSelector((state) => state?.cart);
@@ -33,6 +36,21 @@ const dispatch=useDispatch()
   ];
   return (
     <>
+    
+
+{location.pathname === "/" && (<SplitText
+  text="Welcome to our store!"
+  className="text-3xl font-semibold text-center ml-5 mb-5"
+  delay={150}
+  animationFrom={{ opacity: 0, transform: 'translate3d(0,50px,0)' }}
+  animationTo={{ opacity: 1, transform: 'translate3d(0,0,0)' }}
+ 
+  textAlign="center"
+  threshold={0.2}
+  rootMargin="-50px"
+  onLetterAnimationComplete={handleAnimationComplete}
+/>)}
+
       <div className="flex justify-between">
         <img src={logo} />
         {location.pathname === "/shop" && (
