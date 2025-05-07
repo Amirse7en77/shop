@@ -43,7 +43,7 @@ const Signin: FC<IProps> = (props) => {
         body: JSON.stringify({
           username: username,
           password: password,
-          expiresInMins: 30,
+          expiresInMins: 1,
         }),
       });
 
