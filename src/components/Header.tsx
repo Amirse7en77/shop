@@ -13,10 +13,8 @@ interface IProps {}
 
 const Header: FC<IProps> = (props) => {
   const user = useSelector((state) => state?.user);
-const dispatch=useDispatch()
+  const dispatch = useDispatch();
   console.log(user);
-  
-  
 
   const location = useLocation();
 

@@ -1,13 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
-import React, { FC } from "react";
-import axios from "axios";
 import {
   Card,
-
 } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { FC } from "react";
 
+import { useSelector } from "react-redux";
 import CustomDialog from "./CustomDialog";
-import { useDispatch, useSelector } from "react-redux";
 
 interface Product {
   id: number;
