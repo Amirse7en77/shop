@@ -1,16 +1,13 @@
-import React, { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import logo from "./../assets/Logo.svg";
 
 import { Button } from "./ui/button";
 
-import { Link, useLocation } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
-import { Badge } from "./ui/badge";
 import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation } from "react-router-dom";
 import Search from "./Search";
-import { getJwtToken, getRefreshToken } from "@/services/jwtServices";
-import { getUser } from "@/slice/userSlice";
-import { useProductFilters } from "./customHooks/FilterParams";
+import { Badge } from "./ui/badge";
 
 interface IProps {}
 

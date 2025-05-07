@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { useProductFilters } from "./customHooks/FilterParams";
-import { useDebounce } from "./customHooks/useDebounce";
+import { useDebounce } from "./customHooks/UseDebounce";
 import { useDispatch, useSelector } from "react-redux";
 import { setFilterQuery } from "@/slice/filteredShopSlice";
 

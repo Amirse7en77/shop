@@ -1,12 +1,12 @@
 import { signinApi, userApi } from "@/services/authServices";
 import { getJwtToken, getRefreshToken } from "@/services/jwtServices";
 import { getUser } from "@/slice/userSlice";
-import React, { FC, useEffect } from "react";
+import React, { FC, PropsWithChildren, useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-interface IProps {}
 
-const Wrapper: FC<IProps> = ({ children }) => {
+
+const Wrapper: FC<PropsWithChildren> = ({ children }) => {
   const dispatch = useDispatch();
   
   useEffect(() => {
